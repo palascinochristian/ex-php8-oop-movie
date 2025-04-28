@@ -1,102 +1,47 @@
 <?php
-
 require_once 'Traits/Platforms.php';
-
-class Movie {
-    use Platforms;
-    public $title;
-    public $director;
-    public $releaseYear;
-    public $genres = [];
-   
-    
-    public function __construct($title, $director, $releaseYear, $genres = [], $platforms = []) {
-        $this->genres = $genres;
-        $this->title = $title;
-        $this->director = $director;
-        $this->releaseYear = $releaseYear;
-        $this->platforms = $platforms;
-    }
-
-    public function getTitle() {
-        return $this->title;
-    }
-}
-
-class Genre {
-    public $type;
-
-    public function __construct($type) {
-        $this->type = $type;
-    }
-
-    public function getType() {
-        return $this->type;
-    }
-}
-
-
-$movie1 = new Movie("Die Hard", "John McTiernan", 1988, [new Genre("Action"), new Genre("Thriller")], ["Netflix", "HBO Max"]);
-$movie2 = new Movie("The Matrix", "Lana Wachowski, Lilly Wachowski", 1999, [new Genre("Sci-Fi"), new Genre("Action")], ["Netflix", "HBO Max"]);
-$movie3 = new Movie("The Godfather", "Francis Ford Coppola", 1972, [new Genre("Crime"), new Genre("Drama")], ["Netflix", "HBO Max"]);
-
-
+require_once 'Models/movies.php';
+require_once 'Models/genres.php';
+require_once 'db.php';
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Movies</title>
 </head>
 <body>
    <h1> Movies List </h1>
-    <ul>
-        <li>
-            <h2><?php echo $movie1->getTitle(); ?></h2>
-            <p>Genres: 
-                <?php foreach ($movie1->genres as $genre) {
-                    echo $genre->getType() . ", ";
-                } ?>
-            </p>
-            <p>Platforms: 
-                <?php foreach ($movie1->getPlatforms() as $platform) {
-                    echo $platform . ", ";
-                } ?>
-            </p>
-        </li>
-        <li>
-            <h2><?php echo $movie2->getTitle(); ?></h2>
-    
-            <p>Genres: 
-                <?php foreach ($movie2->genres as $genre) {
-                    echo $genre->getType() . ", ";
-                } ?>
-            </p>
-            <p>Platforms: 
-                <?php foreach ($movie2->getPlatforms() as $platform) {
-                    echo $platform . ", ";
-                } ?>
-            </p>
-        </li>
-        <li>
-            <h2><?php echo $movie3->getTitle(); ?></h2>
-            <p>Genres: 
-                <?php foreach ($movie3->genres as $genre) {
-                    echo $genre->getType() . ", ";
-                } ?>
-            </p>
-            <p>Platforms: 
-                <?php foreach ($movie3->getPlatforms() as $platform) {
-                    echo $platform . ", ";
-                } ?>
-            </p>
-        </li>
+  
+   <ul class="list-group">
+    <?php foreach ($movies as $movie): ?>
+        <li class="list-group-item mb-3">
+            <h5 class="mb-1"><?= $movie->getTitle() ?></h5>
+            <p class="mb-1"><strong>Director:</strong> <?= $movie->director ?></p>
+            <p class="mb-1"><strong>Release Year:</strong> <?= $movie->releaseYear ?></p>
 
-        <?php  //echo var_dump($movie1, $movie2, $movie3)?>
-     </ul>
+            <div class="mb-1">
+                <strong>Genres:</strong>
+                <ul class="list-inline">
+                    <?php foreach ($movie->genres as $genre): ?>
+                        <li class="list-inline-item badge bg-primary"><?= $genre->getType() ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+
+            <div>
+                <strong>Platforms:</strong>
+                <ul class="list-inline">
+                    <?php foreach ($movie->getPlatforms() as $platform): ?>
+                        <li class="list-inline-item badge bg-success"><?= $platform ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </li>
+    <?php endforeach; ?>
+</ul>
 </body>
 </html>
